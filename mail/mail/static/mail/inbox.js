@@ -6,9 +6,18 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
 
+  // Send email
+  document.querySelector('#compose-form').addEventListener('submit', send_email);
+
   // By default, load the inbox
   load_mailbox('inbox');
 });
+
+function send_email(event){
+  event.preventDefault();
+  console.log('works');
+  load_mailbox('sent');
+}
 
 function compose_email() {
 
