@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
-  document.querySelector('#compose').addEventListener('click', compose_email);
+  document.querySelector('#compose').addEventListener('click', () => compose_email('', '', '', ''));
 
   // Send email
   document.querySelector('#compose-form').addEventListener('submit', (event) => {
@@ -43,17 +43,34 @@ function send_email(){
   load_mailbox('sent');
 }
 
-function compose_email() {
+function compose_email(resp, sbj, body, time) {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
+  // if it is a response, pre-fill fields
+  if (resp !== ''){
+    document.querySelector('#compose-recipients').value = resp;
 
-  // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+    // if subject doesn't already begin with Re:, set the begining to Re:
+    let subject = '';
+    if (sbj[0] === 'R' && sbj[1] === 'e'){
+      subject = sbj;
+    }
+    else{
+      subject =  `Re: ${sbj}`;
+    }
+    document.querySelector('#compose-subject').value = subject;
+    
+    document.querySelector('#compose-body').value = `On ${time} ${resp} wrote: ${body}`;
+  }
+  else{
+    // Clear out composition fields
+    document.querySelector('#compose-recipients').value = '';
+    document.querySelector('#compose-subject').value = '';
+    document.querySelector('#compose-body').value = '';
+  }
 }
 
 function load_mailbox(mailbox) {
@@ -96,7 +113,7 @@ function load_mailbox(mailbox) {
                 read: true
             })
           });
-
+          
           // get the email by id
           fetch(`/emails/${email.dataset.id}`)
           .then(response => response.json())
@@ -127,10 +144,11 @@ function load_mailbox(mailbox) {
                 <div><b>Subject:</b> ${email.subject}</div>
                 <div><b>Timestamp:</b> ${email.timestamp}</div>
               </div>
-              <button id='reply' class='btn btn-sm btn-outline-primary'>Reply</button>
+              <button id="reply" onclick="compose_email('${email.sender}', '${email.subject}', '${email.body}', '${email.timestamp}')" class='btn btn-sm btn-outline-primary'>Reply</button>
               <hr>
               <p>${email.body}</p>
               `
+              
               // if user is in inbox - let them archive emails
               if (mailbox === 'inbox'){
                 // create a button to archive emails
@@ -162,7 +180,7 @@ function load_mailbox(mailbox) {
                   .then(load_mailbox('inbox'));
                 })
               } 
-          });
+          })
         });
       });
   });
