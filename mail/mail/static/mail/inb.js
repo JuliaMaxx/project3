@@ -89,8 +89,6 @@ function load_mailbox(mailbox) {
       });
       document.querySelectorAll(".cont").forEach((email) => {
         email.addEventListener("click", () => {
-          console.log(email.dataset.id);
-
           // once clicked on, the email should be marked as read
           fetch(`/emails/${email.dataset.id}`, {
             method: 'PUT',
@@ -129,6 +127,7 @@ function load_mailbox(mailbox) {
                 <div><b>Subject:</b> ${email.subject}</div>
                 <div><b>Timestamp:</b> ${email.timestamp}</div>
               </div>
+              <button id='reply' class='btn btn-sm btn-outline-primary'>Reply</button>
               <hr>
               <p>${email.body}</p>
               `
