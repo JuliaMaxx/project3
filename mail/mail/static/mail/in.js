@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
+
+  // initially hide email view
   document.querySelector('#email-view').style.display = 'none';
+
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
@@ -100,13 +103,13 @@ function load_mailbox(mailbox) {
           fetch(`/emails/${email.dataset.id}`)
           .then(response => response.json())
           .then(email => {
-              // Print email
-              console.log(email);
 
+              // show the email and hide other views
               document.querySelector('#emails-view').style.display = 'none';
               document.querySelector('#compose-view').style.display = 'none';
               document.querySelector('#email-view').style.display = 'block';
 
+              // get the recepients as a comma separated string
               let receps = "";
               const r = email.recipients;
               for (let i = 0; i < r.length; i++){
@@ -117,8 +120,8 @@ function load_mailbox(mailbox) {
                   receps += `${r[i]},`
                 }
               }
-              
-              console.log(receps);
+
+              // generate html to show the email
               document.querySelector('#email-view').innerHTML = `
               <div>
                 <div><b>From:</b> ${email.sender}</div>
