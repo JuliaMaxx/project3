@@ -132,6 +132,37 @@ function load_mailbox(mailbox) {
               <hr>
               <p>${email.body}</p>
               `
+              // if user is in inbox - let them archive emails
+              if (mailbox === 'inbox'){
+                // create a button to archive emails
+                document.querySelector('#email-view').innerHTML += "<button class='archive btn btn-sm btn-outline-primary'>Archive</button>";
+                // archive email based on its id
+                document.querySelector('.archive').addEventListener('click', () => {
+                  fetch(`/emails/${email.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        archived: true
+                    })
+                  })
+                  // load the inbox
+                  .then(load_mailbox('inbox'));
+                })
+              // if the user is in archive - let them unarchive emails
+              } else if (mailbox === 'archive') {
+                // create a button to unarchive emails
+                document.querySelector('#email-view').innerHTML += "<button class='unarchive btn btn-sm btn-outline-primary'>Unarchive</button>";
+                // unarchive email based on its id
+                document.querySelector('.unarchive').addEventListener('click', () => {
+                  fetch(`/emails/${email.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        archived: false
+                    })
+                  })
+                  // load the inbox
+                  .then(load_mailbox('inbox'));
+                })
+              } 
           });
         });
       });
