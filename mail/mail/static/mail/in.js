@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-
+  document.querySelector('#email-view').style.display = 'none';
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
@@ -44,6 +44,7 @@ function compose_email() {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
@@ -55,6 +56,7 @@ function compose_email() {
 function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
+  document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
   
   // Show the mailbox name
@@ -101,7 +103,32 @@ function load_mailbox(mailbox) {
               // Print email
               console.log(email);
 
-              // ... do something else with email ...
+              document.querySelector('#emails-view').style.display = 'none';
+              document.querySelector('#compose-view').style.display = 'none';
+              document.querySelector('#email-view').style.display = 'block';
+
+              let receps = "";
+              const r = email.recipients;
+              for (let i = 0; i < r.length; i++){
+                if (i == r.length - 1){
+                  receps += `${r[i]}`;
+                }
+                else{
+                  receps += `${r[i]},`
+                }
+              }
+              
+              console.log(receps);
+              document.querySelector('#email-view').innerHTML = `
+              <div>
+                <div><b>From:</b> ${email.sender}</div>
+                <div><b>To:</b> ${receps}</div>
+                <div><b>Subject:</b> ${email.subject}</div>
+                <div><b>Timestamp:</b> ${email.timestamp}</div>
+              </div>
+              <hr>
+              <p>${email.body}</p>
+              `
           });
         });
       });
