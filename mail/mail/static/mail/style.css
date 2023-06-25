@@ -1,0 +1,9 @@
+textarea {
+    min-height: 400px;
+}
+.cont{
+    display:flex;
+    justify-content: space-between;
+    padding: 10px;
+    font-weight: 600;
+}
