@@ -66,7 +66,7 @@ function load_mailbox(mailbox) {
   .then(emails => {
       // loop through all the emails and for each of them create a new box
       emails.forEach((email) => {
-        
+
         // set the background to white if email is unread otherwise set it to gray
         let background = "";
         email.read ? background = 'rgb(209, 209, 209)': background = 'white';
@@ -74,13 +74,36 @@ function load_mailbox(mailbox) {
         // generate html to display each email
         document.querySelector('#emails-view').innerHTML +=
         `<hr>
-        <div class="cont" style="background-color:${background};">
+        <div class="cont" data-id="${email.id}" style="background-color:${background};">
             <div>
               <div>${email.sender}</div>
               <div>${email.subject}</div>
             </div>
             <div>${email.timestamp}</div>
         </div>`
+      });
+      document.querySelectorAll(".cont").forEach((email) => {
+        email.addEventListener("click", () => {
+          console.log(email.dataset.id);
+
+          // once clicked on, the email should be marked as read
+          fetch(`/emails/${email.dataset.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                read: true
+            })
+          });
+
+          // get the email by id
+          fetch(`/emails/${email.dataset.id}`)
+          .then(response => response.json())
+          .then(email => {
+              // Print email
+              console.log(email);
+
+              // ... do something else with email ...
+          });
+        });
       });
   });
 }
