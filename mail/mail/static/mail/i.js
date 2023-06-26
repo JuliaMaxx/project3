@@ -62,8 +62,8 @@ function compose_email(resp, sbj, body, time) {
       subject =  `Re: ${sbj}`;
     }
     document.querySelector('#compose-subject').value = subject;
-    
-    document.querySelector('#compose-body').value = `On ${time} ${resp} wrote: ${body}`;
+
+    document.querySelector('#compose-body').value = `On ${time} ${resp} wrote: ${body}\n. . .\n`;
   }
   else{
     // Clear out composition fields
@@ -86,6 +86,9 @@ function load_mailbox(mailbox) {
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails => {
+      if (emails.length < 1){
+        document.querySelector('#emails-view').innerHTML += `<h6>No emails yet</h6>`;
+      }
       // loop through all the emails and for each of them create a new box
       emails.forEach((email) => {
 
